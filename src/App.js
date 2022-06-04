@@ -1,24 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
-
+import Main from "./pages/Main";
+import { useEffect, useState } from "react";
+import MyContext from "./Store/store";
+import SearchBar from "./components/SearchBar/SearchBar";
 function App() {
+  const [Data, setData] = useState({});
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    fetch("https://dummyjson.com/products")
+      .then((res) => res.json())
+      .then((d) => {
+        setData(d);
+      });
+  }, []);
+  const searchHandler = (s) => {
+    setSearch(s);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MyContext.Provider value={{ data: Data, searchValue: search }}>
+      <SearchBar searchHandler={searchHandler} />
+      <Main />
+    </MyContext.Provider>
   );
 }
 
